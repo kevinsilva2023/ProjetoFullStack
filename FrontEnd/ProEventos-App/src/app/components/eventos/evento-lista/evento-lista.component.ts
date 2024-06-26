@@ -1,22 +1,23 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
-
+import { Router } from '@angular/router';
+import { Component, OnInit,TemplateRef } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 
-import { EventoService } from '../services/evento.service';
-import { Evento } from '../models/Evento';
+import { EventoService } from '../../../services/evento.service';
+import { Evento } from '../../../models/Evento';
 
 @Component({
-  selector: 'app-eventos',
-  templateUrl: './eventos.component.html',
-  styleUrls: ['./eventos.component.scss'],
+  selector: 'app-evento-lista',
+  templateUrl: './evento-lista.component.html',
+  styleUrls: ['./evento-lista.component.scss']
 })
-export class EventosComponent implements OnInit {
+export class EventoListaComponent implements OnInit {
+
   public eventos: Evento[] = [];
   public eventosFiltrados: Evento[] = [];
 
-  public exibirImagem: boolean = true;
+  public exibirImagem: boolean = false;
   private filtroListado: string = '';
 
   public get filtroLista(): string {
@@ -32,7 +33,6 @@ export class EventosComponent implements OnInit {
       ? this.filtrarEventos(this.filtroLista)
       : this.eventos;
   }
-
   public filtrarEventos(filtrarPor: string): Evento[] {
     filtrarPor = filtrarPor.toLocaleLowerCase();
     return this.eventos.filter(
@@ -41,14 +41,14 @@ export class EventosComponent implements OnInit {
         evento.local.toLocaleLowerCase().indexOf(filtrarPor) !== -1
     );
   }
-
   constructor(
-    private eventoService: EventoService,
-    private modalService: BsModalService,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService
+    private eventoService : EventoService,
+    private modalService : BsModalService,
+    private toastr : ToastrService,
+    private spinner : NgxSpinnerService,
+    private router : Router,
   ) {}
-
+  
   public ngOnInit(): void {
     this.spinner.show();
     this.getEventos();
@@ -84,4 +84,9 @@ export class EventosComponent implements OnInit {
   decline(): void {
     this.modalRef?.hide();
   }
+
+  detalheEvento(id: number): void {
+    this.router.navigate([`eventos/detalhe/${id}`])
+  }
+
 }
